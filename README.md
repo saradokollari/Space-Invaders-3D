@@ -56,7 +56,26 @@ Protect the pantry as a ginger cat! Shoot yarn balls to chase away the mice whil
 
 ## Code improvements
 
-**Pending before final submission:** Document the three required improvements to the instructor's original code after implementing and testing them. Each entry will identify the original issue, the affected script, and the change made.
+### 1. Time-based enemy projectile movement
+**File:** `Assets/AlienBullet.cs`
+
+Originally, enemy bullets moved a fixed distance of 0.1 units each physics update. This made their actual speed depend on the configured physics timestep.
+
+I changed movement to use `speed * Time.fixedDeltaTime`, with speed expressed in units per second. This preserves consistent movement if the physics timestep changes.
+
+### 2. Collision handling based on object type
+**File:** `Assets/AlienBullet.cs`
+
+Originally, an enemy bullet destroyed itself and whatever object it collided with, without checking the object's type.
+
+I added checks for the player and player projectiles. Hitting the player now calls `GameManager.TakeHit()` instead of destroying the player object. Hitting a player projectile destroys the projectiles. A `hasHit` flag also prevents the same bullet from processing multiple damaging collisions before it is destroyed.
+
+### 3. Encapsulation of player shooting settings and state
+**File:** `Assets/Spaceship.cs`
+
+Originally, `shotCooldown` was public and static, while `lastShot` was also public. This exposed internal shooting state and made the cooldown shared between all instances.
+
+I changed the cooldown to a private instance field with `[SerializeField]`, keeping it configurable in Unity's Inspector. I also made `lastShot` private because other scripts do not need to change it.
 
 
 ## Credits and AI disclosure
